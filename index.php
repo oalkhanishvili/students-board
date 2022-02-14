@@ -14,10 +14,8 @@ try {
 
 } catch (Exception $e) {
     echo sprintf(
-        '<h3>%s</h3><h4>%s</h4><h5>%s:%s</h5>',
+        '<h3>%s</h3><h4>%s</h4>',
         $e->getCode(),
-        $e->getMessage(),
-        $e->getFile(),
-        $e->getLine()
+        $e->getMessage()
     );
 }
