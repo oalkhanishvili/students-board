@@ -2,17 +2,18 @@
 
 namespace Oto\SchoolGrade\Service;
 
-use Faker\Factory;
 use Oto\SchoolGrade\Database\Connector;
+use Oto\SchoolGrade\Exception\StudentException;
 
 class StudentService
 {
     const MINIMAL_SCORE_CSM = 7;
+    const MINIMAL_SCORE_CSMB = 8;
     /**
      * @var Connector
      */
     private $db;
-    private string $responseFormat;
+    private $responseFormat = null;
 
     public function __construct()
     {
@@ -27,10 +28,10 @@ class StudentService
 
 
         if (empty($student)) {
-            throw new \Exception('Student not found');
+            throw new StudentException('Student not found', 404);
         }
 
-        $grades = $this->db->query('SELECT score FROM grades WHERE student_id=:student_id')
+        $grades = $this->db->query('SELECT score FROM grades WHERE student_id=:student_id ORDER BY score DESC')
             ->bind(':student_id', $student['id'])
             ->all();
 
@@ -44,6 +45,16 @@ class StudentService
 
             $avg = $this->calculateAvg($scoreList);
             $passed = $this->checkTestForCSMS($avg);
+        } else if ($student['board'] == DatabaseService::CSMB_BOARD) {
+            $this->setResponseFormat('xml');
+            $scoreList = array_map(function ($grade) {
+                return $grade['score'];
+            }, $grades);
+
+            $avg = $this->calculateAvg($scoreList);
+            $passed = $this->checkTestForCSMSM($scoreList);
+        } else {
+            throw new StudentException('Not supported board', 403);
         }
 
 
@@ -59,6 +70,11 @@ class StudentService
     private function checkTestForCSMS($avg)
     {
         return $avg >= self::MINIMAL_SCORE_CSM;
+    }
+
+    private function checkTestForCSMSM(array $scoreList)
+    {
+        return count($scoreList) > 2 && $scoreList[0] > self::MINIMAL_SCORE_CSMB;
     }
 
     private function calculateAvg(array $values)

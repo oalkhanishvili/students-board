@@ -3,6 +3,7 @@
 namespace Oto\SchoolGrade\Controller;
 
 use Oto\SchoolGrade\Database\Connector;
+use Oto\SchoolGrade\Exception\StudentException;
 use Oto\SchoolGrade\Http\Response;
 use Oto\SchoolGrade\Service\StudentService;
 
@@ -28,16 +29,19 @@ class StudentsController implements ControllerInterface {
     }
     public function get($id)
     {
-
         $data = $this->studentService->getGradeForStudent($id);
 
         $format = $this->studentService->getResponseFormat();
+
         if ($format === 'json') {
             header('Content-Type: application/json; charset=utf-8');
             return (new Response($data))->toJSON();
         }
         if ($format === 'xml') {
-            //need to do
+            header('Content-Type: text/xml');
+            return (new Response($data))->toXml();
         }
+
+        throw new StudentException('Invalid format', 422);
     }
 }
