@@ -35,7 +35,7 @@ class DatabaseService
             $gradeCount = rand(1, 4);
 
             while ($gradeCount > 0) {
-                $grade = $this->db->query("INSERT INTO grades (student_id, score) VALUES (:student_id, :score)")
+                $this->db->query("INSERT INTO grades (student_id, score) VALUES (:student_id, :score)")
                     ->bind(':student_id', $studentId)
                     ->bind(':score', rand(1, 10))->execute();
 
