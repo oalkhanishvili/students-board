@@ -1,0 +1,17 @@
+{
+    "name": "oto/school-grade",
+    "description": "School grade service for students",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Oto\\SchoolGrade\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Oto",
+            "email": "oto.alkhanishvili@isento.ge"
+        }
+    ],
+    "require": {}
+}
