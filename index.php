@@ -1,9 +1,10 @@
 <?php
+define('SECURE_PAGE', true);
+
 require_once __DIR__.'/app/config.php';
 require_once __DIR__.'/src/autoload.php';
 
 use Oto\SchoolGrade\Http\Request;
-
 
 $request = new Request($_SERVER, $_POST, $_GET);
 
